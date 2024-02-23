@@ -1,6 +1,6 @@
-import "./App.css";
-
 import { Grid, Typography } from "@mui/material";
+
+import "./App.css";
 import Form from "./components/Form";
 
 function App() {
