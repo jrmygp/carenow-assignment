@@ -23,6 +23,7 @@ import {
 
 import NumericFormatCustom from "./NumericFormatCustom";
 import dayjs from "dayjs";
+import axiosInstance from "../config/api";
 
 const Form = () => {
   const [description, setDescription] = useState("");
@@ -41,8 +42,8 @@ const Form = () => {
       date: yup.date().required("Date of treatment is required"),
       cost: yup.number().required("Treatment cost is required"),
     }),
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: async (values) => {
+      await axiosInstance.post("/entry", values);
     },
   });
 
