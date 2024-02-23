@@ -41,6 +41,10 @@ const Form = () => {
     },
   });
 
+  /**
+   * Handles prevention of user to type inside the DatePicker component
+   * @param {*} event
+   */
   const onKeyDownDatePicker = (event) => {
     event?.preventDefault();
   };
