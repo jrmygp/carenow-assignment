@@ -43,7 +43,11 @@ const Form = () => {
       cost: yup.number().required("Treatment cost is required"),
     }),
     onSubmit: async (values) => {
-      await axiosInstance.post("/entry", values);
+      await axiosInstance.post("/entry/create", {
+        ...values,
+        medications: selectedMedications,
+        descriptions: selectedDescriptions,
+      });
     },
   });
 

@@ -11,6 +11,10 @@ const PORT = 4000;
 app.use(cors());
 app.use(express.json());
 
+const { entryRoutes } = require("./routes");
+
+app.use("/entry", entryRoutes);
+
 app.use("/", (req, res, next) => {
   res.send("<h1>welcome to careNow assignment project</h1>");
 });
