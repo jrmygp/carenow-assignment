@@ -1,7 +1,8 @@
-const entryController = require("../controllers/entry");
+const entryController = require("../controllers");
 
 const router = require("express").Router();
 
-router.post("/create", entryController.createEntry);
+router.get("/", entryController.entryController.getAllEntry);
+router.post("/create", entryController.entryController.createEntry);
 
 module.exports = router;

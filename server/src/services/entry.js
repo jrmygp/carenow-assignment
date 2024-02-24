@@ -1,6 +1,6 @@
 const Service = require("./service");
 
-const { addDoc } = require("firebase/firestore");
+const { getDocs, addDoc } = require("firebase/firestore");
 
 const { colRef } = require("../config/firebase");
 
@@ -16,8 +16,41 @@ class EntryService extends Service {
       });
 
       return this.handleSuccess({
-        statusCode: 201,
-        message: "Account Registered, please check your email to verify your account!",
+        statusCode: 200,
+        message: "New entry submitted!",
+      });
+    } catch (error) {
+      console.log(error);
+      return this.handleError({
+        statusCode: 500,
+        message: "Server error!",
+      });
+    }
+  };
+
+  static getAllEntry = async () => {
+    try {
+      let entries = [];
+      await getDocs(colRef)
+        .then((snapshot) => {
+          snapshot.docs.forEach((doc) => {
+            entries.push({
+              ...doc.data(),
+              id: doc.id,
+            });
+          });
+        })
+        .catch((error) => {
+          return this.handleError({
+            statusCode: 500,
+            message: error.message,
+          });
+        });
+
+      return this.handleSuccess({
+        statusCode: 200,
+        message: "Entries found",
+        data: entries,
       });
     } catch (error) {
       console.log(error);

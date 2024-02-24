@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 
 import { useFormik } from "formik";
@@ -12,6 +13,7 @@ import {
   CardContent,
   Chip,
   FormControl,
+  FormHelperText,
   FormLabel,
   InputAdornment,
   MenuItem,
@@ -25,7 +27,7 @@ import NumericFormatCustom from "./NumericFormatCustom";
 import dayjs from "dayjs";
 import axiosInstance from "../config/api";
 
-const Form = () => {
+const Form = ({ refresh }) => {
   const [description, setDescription] = useState("");
   const [medication, setMedication] = useState("");
   const [selectedDescriptions, setSelectedDescriptions] = useState([]);
@@ -40,14 +42,17 @@ const Form = () => {
     validationSchema: yup.object().shape({
       patient_name: yup.string().required("Your name is required"),
       date: yup.date().required("Date of treatment is required"),
-      cost: yup.number().required("Treatment cost is required"),
+      cost: yup.number().min(1, "Cost can't be 0").required("Treatment cost is required"),
     }),
-    onSubmit: async (values) => {
+    validateOnChange: false,
+    onSubmit: async (values, { resetForm }) => {
       await axiosInstance.post("/entry/create", {
         ...values,
         medications: selectedMedications,
         descriptions: selectedDescriptions,
       });
+      refresh();
+      resetForm();
     },
   });
 
@@ -122,7 +127,7 @@ const Form = () => {
           }}
           onSubmit={formik.handleSubmit}
         >
-          <FormControl>
+          <FormControl error={formik.errors.patient_name}>
             <FormLabel>Patient Name</FormLabel>
             <TextField
               placeholder="Input your name..."
@@ -131,24 +136,27 @@ const Form = () => {
               fullWidth
               size="small"
               onChange={formik.handleChange}
+              error={formik.errors.patient_name}
             />
+            <FormHelperText>{formik.errors.patient_name}</FormHelperText>
           </FormControl>
 
-          <FormControl>
+          <FormControl error={formik.errors.date}>
             <FormLabel>Date of Treatment</FormLabel>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DatePicker
-                value={formik.values.date}
+                value={formik.values.date || null}
                 name="date"
                 onChange={(value) => formik.setFieldValue("date", dayjs(value).format("YYYY/MM/DD"))}
                 slotProps={{
-                  textField: { size: "small", onKeyDown: onKeyDownDatePicker },
+                  textField: { size: "small", onKeyDown: onKeyDownDatePicker, error: formik.errors.date },
                 }}
               />
             </LocalizationProvider>
+            <FormHelperText>{formik.errors.date}</FormHelperText>
           </FormControl>
 
-          <FormControl>
+          <FormControl error={formik.errors.cost}>
             <FormLabel>Treatment Cost</FormLabel>
             <TextField
               placeholder="Input treatment cost..."
@@ -161,7 +169,9 @@ const Form = () => {
               }}
               value={formik.values.cost}
               onChange={formik.handleChange}
+              error={formik.errors.cost}
             />
+            <FormHelperText>{formik.errors.cost}</FormHelperText>
           </FormControl>
 
           <FormControl>
