@@ -29,6 +29,7 @@ import dayjs from "dayjs";
 import axiosInstance from "../config/api";
 
 const Form = ({ refresh }) => {
+  console.log("rendered");
   const { enqueueSnackbar } = useSnackbar();
   const [description, setDescription] = useState("");
   const [medication, setMedication] = useState("");
