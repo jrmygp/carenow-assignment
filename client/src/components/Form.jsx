@@ -3,6 +3,7 @@ import { useState } from "react";
 
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { useSnackbar } from "notistack";
 
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -28,6 +29,7 @@ import dayjs from "dayjs";
 import axiosInstance from "../config/api";
 
 const Form = ({ refresh }) => {
+  const { enqueueSnackbar } = useSnackbar();
   const [description, setDescription] = useState("");
   const [medication, setMedication] = useState("");
   const [selectedDescriptions, setSelectedDescriptions] = useState([]);
@@ -46,13 +48,19 @@ const Form = ({ refresh }) => {
     }),
     validateOnChange: false,
     onSubmit: async (values, { resetForm }) => {
-      await axiosInstance.post("/entry/create", {
-        ...values,
-        medications: selectedMedications,
-        descriptions: selectedDescriptions,
-      });
-      refresh();
-      resetForm();
+      try {
+        await axiosInstance.post("/entry/create", {
+          ...values,
+          medications: selectedMedications,
+          descriptions: selectedDescriptions,
+        });
+        refresh();
+        resetForm();
+        enqueueSnackbar("Entry submitted", { variant: "success" });
+      } catch (error) {
+        console.log(error);
+        enqueueSnackbar("Something went wrong", { variant: "error" });
+      }
     },
   });
 
