@@ -14,4 +14,4 @@ Second, run the back end server:
 
 Open [http://localhost:5173](http://localhost:5173) with your browser to see the result.
 
-## Happy reviewing!
+## Happy testing!
